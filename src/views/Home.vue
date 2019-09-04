@@ -1,5 +1,6 @@
 <template>
   <span>
+    Home here
   </span>
 </template>
 

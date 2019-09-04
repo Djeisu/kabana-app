@@ -1,11 +1,13 @@
 import firebase from 'firebase'
 
 const config = {
-  apiKey: 'AIzaSyBdJRsnUapWUeFWSePHjrxdkFKXBDxzA-0',
-  authDomain: 'meal-prep-9b30a.firebaseapp.com',
-  databaseURL: 'https://meal-prep-9b30a.firebaseio.com',
-  projectId: 'meal-prep-9b30a',
+  apiKey: 'AIzaSyBhlNmggsc5NGycJMrMPo72yVvmIy00CY8',
+  authDomain: 'kabana-app.firebaseapp.com',
+  databaseURL: 'https://kabana-app.firebaseio.com',
+  projectId: 'kabana-app',
   storageBucket: '',
-  messagingSenderId: '335187018575'
+  messagingSenderId: '751952488485',
+  appId: '1:751952488485:web:2def3b096ddf98d1'
 }
+
 firebase.initializeApp(config)

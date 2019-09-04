@@ -28,7 +28,7 @@
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block>Logout</v-btn>
+          <v-btn block @click.stop="logout">Logout</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -90,12 +90,12 @@ export default {
       group: null,
       items: [
         {
-          title: 'Menu',
-          url: '/menu',
+          title: 'Home',
+          url: '/',
           icon: 'mdi-home'
         },
         {
-          title: 'Profile',
+          title: 'About',
           url: '/about',
           icon: 'mdi-heart'
         },
