@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 import store from '@/store.js'
 
 Vue.use(Router)
@@ -12,7 +11,7 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: () => import('./views/Home.vue'),
       meta: {
         authRequired: true
       }
@@ -26,23 +25,19 @@ const router = new Router({
       }
     },
     {
-      path: '/sign-in',
-      name: 'signin',
-      component: () => import('./views/Signin.vue')
-    },
-    {
-      path: '/join',
-      name: 'join',
-      component: () => import('./views/Join.vue')
+      path: '/auth',
+      name: 'auth',
+      component: () => import('./views/Auth.vue')
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
+  store.dispatch('checkAuth')
   if (to.matched.some(record => record.meta.authRequired)) {
     if (!store.state.isAuthenticated) {
       next({
-        path: '/sign-in'
+        path: '/auth'
       })
     } else {
       next()

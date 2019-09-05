@@ -10,20 +10,11 @@
 
 <script>
 import AppNavigation from '@/components/AppNavigation'
-import firebase from 'firebase'
 
 export default {
   name: 'App',
-  props: {
-    currentUser: Object
-  },
   components: {
     AppNavigation
-  },
-  beforeCreate () {
-    this.$store.dispatch(
-      'verifyUserFirebase',
-      firebase.auth().currentUser)
   }
 }
 </script>
