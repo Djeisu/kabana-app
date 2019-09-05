@@ -8,21 +8,29 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    recipes: [],
     apiUrl: 'https://api.edamam.com/search',
     user: null,
+    token: null,
     isAuthenticated: false,
+    error: null,
+    recipes: [],
     userRecipes: []
   },
   mutations: {
-    setRecipes (state, payload) {
-      state.recipes = payload
-    },
     setUser (state, payload) {
       state.user = payload
     },
+    setToken (state, payload) {
+      state.token = payload
+    },
     setIsAuthenticated (state, payload) {
       state.isAuthenticated = payload
+    },
+    setError (state, payload) {
+      state.error = payload
+    },
+    setRecipes (state, payload) {
+      state.recipes = payload
     },
     setUserRecipes (state, payload) {
       state.userRecipes = payload
@@ -45,41 +53,30 @@ export default new Vuex.Store({
         commit('setRecipes', [])
       }
     },
-    verifyUserFirebase ({ commit }, user) {
-      if (user) {
-        commit('setUser', user)
+    checkAuth ({ commit }) {
+      if (firebase.auth().currentUser) {
+        commit('setUser', firebase.auth().currentUser)
+        // commit('setToken', result.credential.accessToken)
         commit('setIsAuthenticated', true)
-        router.push('/')
       }
     },
-    userLogin ({ commit }, { email, password }) {
+    userLoginOAuth ({ commit }) {
+      var provider = new firebase.auth.GoogleAuthProvider()
       firebase
         .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(user => {
-          commit('setUser', user.user)
+        .signInWithPopup(provider)
+        .then(result => {
+          commit('setUser', result.user)
+          commit('setToken', result.credential.accessToken)
           commit('setIsAuthenticated', true)
           router.push('/')
         })
-        .catch(() => {
+        .catch(error => {
           commit('setUser', null)
+          commit('setToken', null)
           commit('setIsAuthenticated', false)
-          router.push('/')
-        })
-    },
-    userJoin ({ commit }, { email, password }) {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(user => {
-          commit('setUser', user.user)
-          commit('setIsAuthenticated', true)
-          router.push('/about')
-        })
-        .catch(() => {
-          commit('setUser', null)
-          commit('setIsAuthenticated', false)
-          router.push('/')
+          commit('setError', error)
+          router.push('/auth')
         })
     },
     userSignOut ({ commit }) {

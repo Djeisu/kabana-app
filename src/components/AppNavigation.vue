@@ -73,7 +73,10 @@
             :key="n"
             @click="() => {}"
           >
-            <v-list-item-title>Option {{ n }}</v-list-item-title>
+            <v-list-item-title>
+              <v-icon>mdi-account-arrow-right</v-icon>
+              Option {{ n }}
+            </v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -100,14 +103,9 @@ export default {
           icon: 'mdi-heart'
         },
         {
-          title: 'Sign In',
-          url: '/sign-in',
-          icon: 'mdi-magnify'
-        },
-        {
-          title: 'Join',
-          url: '/join',
-          icon: 'mdi-magnify'
+          title: 'Auth',
+          url: '/auth',
+          icon: 'mdi-account-arrow-right'
         }
       ]
     }
