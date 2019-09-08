@@ -58,7 +58,7 @@
       </v-btn>
 
       <v-menu
-        left
+        transition="slide-y-transition"
         bottom
       >
         <template v-slot:activator="{ on }">
