@@ -5,11 +5,12 @@
       disable-resize-watcher>
       <v-list-item>
         <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+          <v-img :src="user().photo"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>John Leider</v-list-item-title>
+          <v-list-item-title>{{ user().name }}</v-list-item-title>
+          <v-list-item-subtitle v-text="user().email"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -33,17 +34,8 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar
-      app
-      color="deep-purple accent-4"
-      dense
-      dark
-      collapse
-      collapse-on-scroll
-    >
-      <v-app-bar-nav-icon
-      @click.stop="drawer = !drawer"
-      ></v-app-bar-nav-icon>
+    <v-app-bar app color="deep-purple accent-4" dense dark collapse collapse-on-scroll>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
       <v-toolbar-title>Page title</v-toolbar-title>
 
@@ -57,10 +49,7 @@
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
 
-      <v-menu
-        transition="slide-y-transition"
-        bottom
-      >
+      <v-menu transition="slide-y-transition" bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>mdi-dots-vertical</v-icon>
@@ -68,11 +57,7 @@
         </template>
 
         <v-list>
-          <v-list-item
-            v-for="n in 5"
-            :key="n"
-            @click="() => {}"
-          >
+          <v-list-item v-for="n in 5" :key="n" @click="() => {}">
             <v-list-item-title>
               <v-icon>mdi-account-arrow-right</v-icon>
               Option {{ n }}
@@ -104,7 +89,7 @@ export default {
         },
         {
           title: 'Auth',
-          url: '/auth',
+          url: '/auth/',
           icon: 'mdi-account-arrow-right'
         }
       ]
@@ -123,14 +108,17 @@ export default {
   methods: {
     logout () {
       this.$store.dispatch('userSignOut')
+    },
+    user () {
+      return {
+        name: this.$store.state.user.displayName,
+        email: this.$store.state.user.email,
+        photo: this.$store.state.user.photoURL
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-a {
-  color: white;
-  text-decoration: none;
-}
 </style>

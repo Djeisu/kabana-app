@@ -10,24 +10,35 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('./views/Home.vue'),
-      meta: {
-        authRequired: true
-      }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('./views/About.vue'),
-      meta: {
-        authRequired: true
-      }
+      component: () => import('./views/main/Core.vue'),
+      meta: { authRequired: true },
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import('./views/main/Home.vue')
+        },
+        {
+          path: 'about',
+          component: () => import('./views/main/About.vue')
+        }
+      ]
     },
     {
       path: '/auth',
-      name: 'auth',
-      component: () => import('./views/Auth.vue')
+      component: () => import('./views/register/Core.vue'),
+      children: [
+        {
+          path: '',
+          name: 'auth',
+          component: () => import('./views/register/Auth.vue')
+        },
+        {
+          path: 'form',
+          name: 'form',
+          component: () => import('./views/register/Form.vue')
+        }
+      ]
     }
   ]
 })
@@ -36,12 +47,12 @@ router.beforeEach((to, from, next) => {
   store.dispatch('checkAuth')
   if (to.matched.some(record => record.meta.authRequired)) {
     if (!store.state.isAuthenticated) {
-      next({
-        path: '/auth'
-      })
+      next({ name: 'auth', query: { redirect: to.fullPath } })
     } else {
       next()
     }
+  } else if (store.state.isAuthenticated) {
+    next({ name: 'home' })
   } else {
     next()
   }

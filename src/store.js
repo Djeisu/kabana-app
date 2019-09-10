@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     apiUrl: 'https://api.edamam.com/search',
     user: null,
+    userData: null,
     token: null,
     isAuthenticated: false,
     error: null,
@@ -54,9 +55,10 @@ export default new Vuex.Store({
       }
     },
     checkAuth ({ commit }) {
-      if (firebase.auth().currentUser) {
-        commit('setUser', firebase.auth().currentUser)
-        // commit('setToken', result.credential.accessToken)
+      const currentUser = firebase.auth().currentUser
+      if (currentUser) {
+        commit('setUser', currentUser)
+        commit('setToken', currentUser.refreshToken)
         commit('setIsAuthenticated', true)
       }
     },
@@ -93,6 +95,20 @@ export default new Vuex.Store({
           commit('setIsAuthenticated', false)
           router.push('/')
         })
+    },
+    addUser ({ state }, payload) {
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(state.user.uid)
+        .set(payload)
+    },
+    getUser ({ state }) {
+      return firebase
+        .firestore()
+        .collection('users')
+        .doc(state.user.uid)
+        .get()
     },
     addRecipe ({ state }, payload) {
       firebase

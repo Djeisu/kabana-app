@@ -2,15 +2,15 @@
     <v-container>
         <v-layout column>
             <h1 class="title my-3">My Recipes</h1>
-            <div
+            <!-- <div
                 v-for="(item, idx) in userRecipes"
                 class="subheading mb-2"
                 :key="idx"
             >
                 {{ item }}
-            </div>
+            </div> -->
             <v-flex mt-4>
-                <v-btn color="primary" to="/menu">Go To Menu</v-btn>
+                <v-btn color="primary" to="/">Go To Menu</v-btn>
             </v-flex>
         </v-layout>
     </v-container>
@@ -20,12 +20,9 @@
 export default {
   name: 'About',
   computed: {
-    userRecipes () {
-      return this.$store.state.userRecipes
-    }
-  },
-  mounted () {
-    this.getRecipes()
+    // userRecipes () {
+    //   return this.$store.state.userRecipes
+    // }
   },
   methods: {
     getRecipes () {
