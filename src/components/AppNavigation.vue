@@ -117,6 +117,11 @@ export default {
       }
     }
   }
+  // mounted() {
+  //   var u = new User();
+  //   u.name = 'djheyson oli'
+  //   console.log(u.validation());
+  // }
 }
 </script>
 

@@ -1,5 +1,12 @@
 # kabana
 
+## Project Dependences
+
+```
+https://vuemc.io/#basic-usage
+https://vuetifyjs.com/en/
+```
+
 ## Project setup
 ```
 npm install
