@@ -10,7 +10,7 @@
             <v-spacer></v-spacer>
             <v-btn
               color="primary"
-              @click="auth"
+              @click="authGoogle"
               data-cy="signinSubmitBtn">
               Auth
             </v-btn>
@@ -25,8 +25,10 @@
 export default {
   name: 'auth',
   methods: {
-    auth () {
-      this.$store.dispatch('userLoginOAuth')
+    authGoogle () {
+      this.$store.dispatch('userAuth', {
+        provider: new this.$firebase.auth.GoogleAuthProvider()
+      })
     }
   }
 }

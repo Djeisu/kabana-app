@@ -9,6 +9,7 @@ import './registerServiceWorker'
 import '@babel/polyfill'
 
 Vue.config.productionTip = false
+Vue.prototype.$firebase = firebase
 
 firebase.auth().onAuthStateChanged((user) => {
   new Vue({

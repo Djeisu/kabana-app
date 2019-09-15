@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    apiUrl: 'https://api.edamam.com/search',
+    apiUrl: '',
     user: null,
     userData: null,
     token: null,
@@ -20,6 +20,9 @@ export default new Vuex.Store({
   mutations: {
     setUser (state, payload) {
       state.user = payload
+    },
+    setUserData (state, payload) {
+      state.userData = payload
     },
     setToken (state, payload) {
       state.token = payload
@@ -54,23 +57,36 @@ export default new Vuex.Store({
         commit('setRecipes', [])
       }
     },
-    checkAuth ({ commit }) {
+    checkAuth ({ dispatch, commit }) {
       const currentUser = firebase.auth().currentUser
       if (currentUser) {
         commit('setUser', currentUser)
         commit('setToken', currentUser.refreshToken)
         commit('setIsAuthenticated', true)
+
+        dispatch('getDoc', {
+          collection: 'users',
+          docUid: currentUser.uid
+        }).then(doc => commit('setUserData', doc.data()))
       }
     },
-    userLoginOAuth ({ commit }) {
-      var provider = new firebase.auth.GoogleAuthProvider()
+    userAuth ({ dispatch, commit }, payload) {
       firebase
         .auth()
-        .signInWithPopup(provider)
+        .signInWithPopup(payload.provider)
         .then(result => {
           commit('setUser', result.user)
           commit('setToken', result.credential.accessToken)
           commit('setIsAuthenticated', true)
+
+          if (result.additionalUserInfo.isNewUser) {
+            dispatch('addDoc', {
+              collection: 'users',
+              docUid: result.user.uid,
+              doc: { isNewUser: true }
+            })
+          }
+
           router.push('/')
         })
         .catch(error => {
@@ -78,6 +94,7 @@ export default new Vuex.Store({
           commit('setToken', null)
           commit('setIsAuthenticated', false)
           commit('setError', error)
+
           router.push('/auth')
         })
     },
@@ -88,26 +105,28 @@ export default new Vuex.Store({
         .then(() => {
           commit('setUser', null)
           commit('setIsAuthenticated', false)
-          router.push('/')
+
+          router.push('/auth')
         })
         .catch(() => {
           commit('setUser', null)
           commit('setIsAuthenticated', false)
-          router.push('/')
+
+          router.push('/auth')
         })
     },
-    addUser ({ state }, payload) {
+    addDoc ({ state }, payload) {
       firebase
         .firestore()
-        .collection('users')
-        .doc(state.user.uid)
-        .set(payload)
+        .collection(payload.collection)
+        .doc(payload.docUid)
+        .set(payload.doc)
     },
-    getUser ({ state }) {
+    getDoc ({ state }, payload) {
       return firebase
         .firestore()
-        .collection('users')
-        .doc(state.user.uid)
+        .collection(payload.collection)
+        .doc(payload.docUid)
         .get()
     },
     addRecipe ({ state }, payload) {

@@ -1,5 +1,12 @@
 # kabana
 
+## Production Deploy
+
+```
+https://kabana-app.web.app/
+https://kabana-app.firebaseapp.com
+```
+
 ## Project Dependences
 
 ```
