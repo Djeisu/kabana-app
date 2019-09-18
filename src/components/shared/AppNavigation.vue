@@ -5,11 +5,11 @@
       disable-resize-watcher>
       <v-list-item>
         <v-list-item-avatar>
-          <v-img :src="user().photo"></v-img>
+          <v-img :src="user().photoURL"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>{{ user().name }}</v-list-item-title>
+          <v-list-item-title>{{ user().displayName }}</v-list-item-title>
           <v-list-item-subtitle v-text="user().email"></v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -79,7 +79,7 @@ export default {
       items: [
         {
           title: 'Home',
-          url: '/',
+          url: '/home',
           icon: 'mdi-home'
         },
         {
@@ -88,9 +88,14 @@ export default {
           icon: 'mdi-heart'
         },
         {
-          title: 'Auth',
-          url: '/auth/',
-          icon: 'mdi-account-arrow-right'
+          title: 'Profile',
+          url: '/user/profile',
+          icon: 'mdi-account'
+        },
+        {
+          title: 'Form',
+          url: '/user/form',
+          icon: 'mdi-account'
         }
       ]
     }
@@ -110,11 +115,7 @@ export default {
       this.$store.dispatch('userSignOut')
     },
     user () {
-      return {
-        name: this.$store.state.user.displayName,
-        email: this.$store.state.user.email,
-        photo: this.$store.state.user.photoURL
-      }
+      return this.$store.state.user
     }
   }
 }

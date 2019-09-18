@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'user'
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>
