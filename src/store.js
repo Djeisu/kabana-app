@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+// import axios from 'axios'
 import firebase from 'firebase'
 import router from '@/router'
 
@@ -10,19 +10,13 @@ export default new Vuex.Store({
   state: {
     apiUrl: '',
     user: null,
-    userData: null,
     token: null,
     isAuthenticated: false,
-    error: null,
-    recipes: [],
-    userRecipes: []
+    error: null
   },
   mutations: {
     setUser (state, payload) {
       state.user = payload
-    },
-    setUserData (state, payload) {
-      state.userData = payload
     },
     setToken (state, payload) {
       state.token = payload
@@ -32,66 +26,52 @@ export default new Vuex.Store({
     },
     setError (state, payload) {
       state.error = payload
-    },
-    setRecipes (state, payload) {
-      state.recipes = payload
-    },
-    setUserRecipes (state, payload) {
-      state.userRecipes = payload
     }
   },
   actions: {
-    async getRecipes ({ state, commit }, plan) {
-      try {
-        let response = await axios.get(`${state.apiUrl}`, {
-          params: {
-            q: plan,
-            app_id: '5b6623d5',
-            app_key: '46674aa2193dbb7b88ffd897331e661a',
-            from: 0,
-            to: 9
-          }
-        })
-        commit('setRecipes', response.data.hits)
-      } catch (error) {
-        commit('setRecipes', [])
-      }
-    },
-    checkAuth ({ dispatch, commit }) {
+    // async getRecipes ({ state, commit }, plan) {
+    //   try {
+    //     let response = await axios.get(`${state.apiUrl}`, {
+    //       params: { q: plan }
+    //     })
+    //     commit('setRecipes', response.data.hits)
+    //   } catch (error) {
+    //     commit('setRecipes', [])
+    //   }
+    // },
+    checkAuth ({ dispatch, state, commit }, payload) {
       const currentUser = firebase.auth().currentUser
-      if (currentUser) {
-        commit('setUser', currentUser)
-        commit('setToken', currentUser.refreshToken)
-        commit('setIsAuthenticated', true)
-
+      if (currentUser && state.user == null) {
         dispatch('getDoc', {
-          collection: 'users',
+          collection: payload.model,
           docUid: currentUser.uid
-        }).then(doc => commit('setUserData', doc.data()))
+        }).then(doc => {
+          commit('setIsAuthenticated', true)
+          commit('setToken', currentUser.refreshToken)
+          commit('setUser', doc.data())
+          router.push('/home')
+        })
       }
     },
     userAuth ({ dispatch, commit }, payload) {
       firebase
         .auth()
         .signInWithPopup(payload.provider)
-        .then(result => {
-          commit('setUser', result.user)
-          commit('setToken', result.credential.accessToken)
+        .then(response => {
+          payload.model.buildUser(response)
+          commit('setUser', payload.model.attributes)
+          commit('setToken', response.credential.accessToken)
           commit('setIsAuthenticated', true)
+          dispatch('addDoc', {
+            collection: payload.model.model,
+            docUid: response.user.uid,
+            doc: payload.model.attributes
+          })
 
-          if (result.additionalUserInfo.isNewUser) {
-            dispatch('addDoc', {
-              collection: 'users',
-              docUid: result.user.uid,
-              doc: { isNewUser: true }
-            })
-          }
-
-          router.push('/')
+          router.push('/home')
         })
         .catch(error => {
           commit('setUser', null)
-          commit('setToken', null)
           commit('setIsAuthenticated', false)
           commit('setError', error)
 
@@ -128,22 +108,22 @@ export default new Vuex.Store({
         .collection(payload.collection)
         .doc(payload.docUid)
         .get()
-    },
-    addRecipe ({ state }, payload) {
-      firebase
-        .database()
-        .ref('users')
-        .child(state.user.uid)
-        .push(payload.recipe.label)
-    },
-    getUserRecipes ({ state, commit }) {
-      return firebase
-        .database()
-        .ref('users/' + state.user.uid)
-        .once('value', snapshot => {
-          commit('setUserRecipes', snapshot.val())
-        })
     }
+    // addRecipe ({ state }, payload) {
+    //   firebase
+    //     .database()
+    //     .ref('users')
+    //     .child(state.user.uid)
+    //     .push(payload.recipe.label)
+    // },
+    // getUserRecipes ({ state, commit }) {
+    //   return firebase
+    //     .database()
+    //     .ref('users/' + state.user.uid)
+    //     .once('value', snapshot => {
+    //       commit('setUserRecipes', snapshot.val())
+    //     })
+    // }
   },
   getters: {
     isAuthenticated (state) {

@@ -5,10 +5,17 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import './registerServiceWorker'
 import '@babel/polyfill'
 
+// models imports
+import User from '@/models/User'
+
 Vue.config.productionTip = false
+
+// Models GLOBAL
+Vue.prototype.$UserModel = User
+
+// Firebase GLOBAL
 Vue.prototype.$firebase = firebase
 
 firebase.auth().onAuthStateChanged((user) => {

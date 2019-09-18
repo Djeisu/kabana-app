@@ -8,11 +8,10 @@
           </v-toolbar>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              @click="authGoogle"
+            <v-btn @click="authGoogle"
+              color="error"
               data-cy="signinSubmitBtn">
-              Auth
+              <v-icon left>mdi-google</v-icon> Google Auth
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -27,6 +26,7 @@ export default {
   methods: {
     authGoogle () {
       this.$store.dispatch('userAuth', {
+        model: new this.$UserModel(),
         provider: new this.$firebase.auth.GoogleAuthProvider()
       })
     }

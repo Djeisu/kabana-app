@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store.js'
 
+// Models
+import User from '@/models/User'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -14,13 +17,29 @@ const router = new Router({
       meta: { authRequired: true },
       children: [
         {
-          path: '',
+          path: 'home',
           name: 'home',
-          component: () => import('./views/main/Home.vue')
+          component: () => import('./views/main/home/Home.vue')
         },
         {
           path: 'about',
-          component: () => import('./views/main/About.vue')
+          component: () => import('./views/main/about/About.vue')
+        },
+        {
+          path: 'user',
+          component: () => import('./views/main/user/User.vue'),
+          children: [
+            {
+              path: 'profile',
+              name: 'profile',
+              component: () => import('./views/main/user/Profile.vue')
+            },
+            {
+              path: 'form',
+              name: 'form',
+              component: () => import('./views/main/user/Form.vue')
+            }
+          ]
         }
       ]
     },
@@ -32,11 +51,6 @@ const router = new Router({
           path: '',
           name: 'auth',
           component: () => import('./views/register/Auth.vue')
-        },
-        {
-          path: 'form',
-          name: 'form',
-          component: () => import('./views/register/Form.vue')
         }
       ]
     }
@@ -44,7 +58,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  store.dispatch('checkAuth')
+  store.dispatch('checkAuth', new User())
   if (to.matched.some(record => record.meta.authRequired)) {
     if (!store.state.isAuthenticated) {
       next({ name: 'auth', query: { redirect: to.fullPath } })
