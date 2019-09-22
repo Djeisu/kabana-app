@@ -26,7 +26,7 @@ export default {
   methods: {
     authGoogle () {
       this.$store.dispatch('userAuth', {
-        model: new this.$UserModel(),
+        model: this.$UserModel,
         provider: new this.$firebase.auth.GoogleAuthProvider()
       })
     }

@@ -17,7 +17,7 @@ const router = new Router({
       meta: { authRequired: true },
       children: [
         {
-          path: 'home',
+          path: '',
           name: 'home',
           component: () => import('./views/main/home/Home.vue')
         },
@@ -58,7 +58,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  store.dispatch('checkAuth', new User())
+  store.dispatch('getAuth', { model: User, action: 'check' })
   if (to.matched.some(record => record.meta.authRequired)) {
     if (!store.state.isAuthenticated) {
       next({ name: 'auth', query: { redirect: to.fullPath } })
