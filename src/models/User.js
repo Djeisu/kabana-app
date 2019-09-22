@@ -7,7 +7,6 @@ export default class User extends Model {
   // Default attributes that define the "empty" state.
   defaults () {
     return {
-      model: 'User',
       uid: null,
       displayName: null,
       email: null,
@@ -51,15 +50,17 @@ export default class User extends Model {
     }
   }
 
-  buildUser (response) {
+  static buildUser (response) {
     const user = response.user
-    this.displayName = user.displayName
-    this.email = user.email
-    this.emailVerified = user.emailVerified
-    this.isAnonymous = user.isAnonymous
-    this.phoneNumber = user.phoneNumber
-    this.photoURL = user.photoURL
-    this.uid = user.uid
-    this.isNewUser = response.additionalUserInfo.isNewUser
+    return {
+      displayName: user.displayName,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      isAnonymous: user.isAnonymous,
+      phoneNumber: user.phoneNumber,
+      photoURL: user.photoURL,
+      uid: user.uid,
+      isNewUser: response.additionalUserInfo.isNewUser
+    }
   }
 }

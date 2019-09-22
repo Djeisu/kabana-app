@@ -4,6 +4,7 @@
           <h1 class="title my-3">Home</h1>
           <v-flex mt-4>
               <v-btn color="primary" to="/">Go To Menu</v-btn>
+              <v-btn color="error" @click="logout">Logout</v-btn>
           </v-flex>
       </v-layout>
   </v-container>
@@ -12,7 +13,10 @@
 <script>
 export default {
   name: 'home',
-  components: {
+  methods: {
+    logout () {
+      this.$store.dispatch('userSignOut')
+    }
   }
 }
 </script>

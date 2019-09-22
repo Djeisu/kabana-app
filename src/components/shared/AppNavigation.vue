@@ -3,16 +3,25 @@
     <v-navigation-drawer v-model="drawer" absolute temporary app
       class="lighten-2"
       disable-resize-watcher>
-      <v-list-item>
-        <v-list-item-avatar>
-          <v-img :src="user().photoURL"></v-img>
-        </v-list-item-avatar>
+      <v-img :aspect-ratio="18/9" src="https://cdn.vuetifyjs.com/images/parallax/material2.jpg">
+      <v-container class="pa-1">
+        <v-card>
+          <v-img :src="user().photoURL"
+            class="white--text" height="150px">
+            <v-card-title
+              class="fill-height align-end"
+              v-text="user().displayName"
+            ></v-card-title>
+          </v-img>
 
-        <v-list-item-content>
-          <v-list-item-title>{{ user().displayName }}</v-list-item-title>
-          <v-list-item-subtitle v-text="user().email"></v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn icon to="/user/profile"> <v-icon>mdi-account</v-icon> </v-btn>
+            <v-btn icon to="/user/form"> <v-icon>mdi-account-edit</v-icon> </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-container>
+      </v-img>
 
       <v-divider></v-divider>
 
@@ -79,23 +88,13 @@ export default {
       items: [
         {
           title: 'Home',
-          url: '/home',
+          url: '/',
           icon: 'mdi-home'
         },
         {
           title: 'About',
           url: '/about',
           icon: 'mdi-heart'
-        },
-        {
-          title: 'Profile',
-          url: '/user/profile',
-          icon: 'mdi-account'
-        },
-        {
-          title: 'Form',
-          url: '/user/form',
-          icon: 'mdi-account'
         }
       ]
     }

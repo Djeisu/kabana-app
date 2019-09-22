@@ -1,22 +1,27 @@
 <template>
   <v-container>
       <v-layout column>
-          <h1 class="title my-3">Form</h1>
-          <user-form-component/>
-          <v-flex mt-4>
-            <v-btn color="primary" to="/">Go To Menu</v-btn>
-          </v-flex>
+        <h1 class="title my-3">Form</h1>
+        <user-form :action="'Save'" @form="save"/>
       </v-layout>
   </v-container>
 </template>
 
 <script>
-import userFormComponent from './components/FormComponent.vue'
+import UserForm from './components/UserForm.vue'
 
 export default {
-  name: 'userForm',
+  name: 'userFormPage',
   components: {
-    userFormComponent
+    UserForm
+  },
+  methods: {
+    save (user) {
+      this.$store.dispatch('userUpdate', {
+        model: this.$UserModel,
+        response: user
+      })
+    }
   }
 }
 </script>

@@ -39,17 +39,17 @@ export default new Vuex.Store({
     //     commit('setRecipes', [])
     //   }
     // },
-    checkAuth ({ dispatch, state, commit }, payload) {
+    getAuth ({ dispatch, state, commit }, payload) {
       const currentUser = firebase.auth().currentUser
-      if (currentUser && state.user == null) {
+      if (currentUser && (state.user == null || payload.action === 'update')) {
         dispatch('getDoc', {
-          collection: payload.model,
+          collection: payload.model.name,
           docUid: currentUser.uid
         }).then(doc => {
-          commit('setIsAuthenticated', true)
-          commit('setToken', currentUser.refreshToken)
           commit('setUser', doc.data())
-          router.push('/home')
+          commit('setToken', currentUser.refreshToken)
+          commit('setIsAuthenticated', true)
+          router.push('/')
         })
       }
     },
@@ -58,25 +58,28 @@ export default new Vuex.Store({
         .auth()
         .signInWithPopup(payload.provider)
         .then(response => {
-          payload.model.buildUser(response)
-          commit('setUser', payload.model.attributes)
-          commit('setToken', response.credential.accessToken)
-          commit('setIsAuthenticated', true)
-          dispatch('addDoc', {
-            collection: payload.model.model,
-            docUid: response.user.uid,
-            doc: payload.model.attributes
-          })
-
-          router.push('/home')
+          if (response.additionalUserInfo.isNewUser) {
+            dispatch('userUpdate', {
+              model: payload.model,
+              response: payload.model.buildUser(response)
+            })
+          } else location.reload()
         })
         .catch(error => {
           commit('setUser', null)
           commit('setIsAuthenticated', false)
           commit('setError', error)
-
-          router.push('/auth')
         })
+    },
+    userUpdate ({ dispatch }, payload) {
+      dispatch('addDoc', {
+        collection: payload.model.name,
+        docUid: payload.response.uid,
+        doc: payload.response
+      }).then(() => dispatch('getAuth', {
+        model: payload.model,
+        action: 'update'
+      }))
     },
     userSignOut ({ commit }) {
       firebase
@@ -95,14 +98,14 @@ export default new Vuex.Store({
           router.push('/auth')
         })
     },
-    addDoc ({ state }, payload) {
-      firebase
+    addDoc ({ commit }, payload) {
+      return firebase
         .firestore()
         .collection(payload.collection)
         .doc(payload.docUid)
         .set(payload.doc)
     },
-    getDoc ({ state }, payload) {
+    getDoc ({ commit }, payload) {
       return firebase
         .firestore()
         .collection(payload.collection)
