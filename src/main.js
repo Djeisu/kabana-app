@@ -7,12 +7,16 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import '@babel/polyfill'
 
+// Utils
+import Utils from '@/utils'
+
 // models imports
 import User from '@/models/User'
 
 Vue.config.productionTip = false
 
 // Models GLOBAL
+Vue.prototype.$Utils = Utils
 Vue.prototype.$UserModel = User
 
 // Firebase GLOBAL

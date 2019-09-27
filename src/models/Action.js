@@ -36,23 +36,6 @@ export default class Action extends Model {
     }
   }
 
-  // Attribute valuidation
-  // valuidation () {
-  //   return {
-  //     uid: Number.and(min(1)).or(equal(null)),
-  //     name: String.and(required),
-  //     done: Boolean
-  //   }
-  // }
-
-  // Route configuration
-  // routes () {
-  //   return {
-  //     fetch: '/user/{uid}',
-  //     save: '/user'
-  //   }
-  // }
-
   static buildAction () {
     return {
       uid: '',

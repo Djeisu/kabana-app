@@ -33,23 +33,6 @@ export default class User extends Model {
     }
   }
 
-  // Attribute valuidation
-  // valuidation () {
-  //   return {
-  //     uid: Number.and(min(1)).or(equal(null)),
-  //     name: String.and(required),
-  //     done: Boolean
-  //   }
-  // }
-
-  // Route configuration
-  routes () {
-    return {
-      fetch: '/user/{uid}',
-      save: '/user'
-    }
-  }
-
   static buildUser (response) {
     const user = response.user
     return {

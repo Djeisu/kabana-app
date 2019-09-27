@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 // import axios from 'axios'
 import firebase from 'firebase'
 import router from '@/router'
+import Utils from '@/utils'
 
 Vue.use(Vuex)
 
@@ -29,16 +30,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    // async getRecipes ({ state, commit }, plan) {
-    //   try {
-    //     let response = await axios.get(`${state.apiUrl}`, {
-    //       params: { q: plan }
-    //     })
-    //     commit('setRecipes', response.data.hits)
-    //   } catch (error) {
-    //     commit('setRecipes', [])
-    //   }
-    // },
     getAuth ({ dispatch, state, commit }, payload) {
       const currentUser = firebase.auth().currentUser
       if (currentUser && (state.user == null || payload.action === 'update')) {
@@ -99,34 +90,11 @@ export default new Vuex.Store({
         })
     },
     addDoc ({ commit }, payload) {
-      return firebase
-        .firestore()
-        .collection(payload.collection)
-        .doc(payload.docUid)
-        .set(payload.doc)
+      return Utils.addDoc(payload)
     },
     getDoc ({ commit }, payload) {
-      return firebase
-        .firestore()
-        .collection(payload.collection)
-        .doc(payload.docUid)
-        .get()
+      return Utils.getDoc(payload)
     }
-    // addRecipe ({ state }, payload) {
-    //   firebase
-    //     .database()
-    //     .ref('users')
-    //     .child(state.user.uid)
-    //     .push(payload.recipe.label)
-    // },
-    // getUserRecipes ({ state, commit }) {
-    //   return firebase
-    //     .database()
-    //     .ref('users/' + state.user.uid)
-    //     .once('value', snapshot => {
-    //       commit('setUserRecipes', snapshot.val())
-    //     })
-    // }
   },
   getters: {
     isAuthenticated (state) {
